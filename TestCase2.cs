@@ -14,7 +14,8 @@ namespace SeleniumProject1
         }
 
         [Test]
-        public void Test2()
+        [TestCase("BLOCKCHAIN/Cloud/Automation")]
+        public void Test2(string searchItem)
         {
             IWebDriver driver = new ChromeDriver();
 
@@ -31,7 +32,8 @@ namespace SeleniumProject1
             IWebElement inputElement = driver.FindElement(By.Id("new_form_search"));
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
             wait.Until(d => inputElement.Displayed);
-            inputElement.SendKeys("BLOCKCHAIN/Cloud/Automation");
+            inputElement.Clear();
+            inputElement.SendKeys(searchItem);
 
             //4.Click “Find” button
             driver.FindElement(By.XPath("//span[contains(text(), 'Find')]")).Click();
