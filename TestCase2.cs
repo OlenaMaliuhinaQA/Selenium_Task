@@ -8,38 +8,35 @@ namespace SeleniumProject1
 {
     public class Tests2
     {
+        private IWebDriver driver;
+        private WebDriverWait wait;
         [SetUp]
         public void Setup()
         {
+            driver = new ChromeDriver();
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
+            driver.Navigate().GoToUrl(@"https://www.epam.com/");
+            driver.Manage().Window.Maximize();
         }
 
         [Test]
         [TestCase("BLOCKCHAIN/Cloud/Automation")]
         public void Test2(string searchItem)
         {
-            IWebDriver driver = new ChromeDriver();
-
-            driver.Navigate().GoToUrl(@"https://www.epam.com/");
-
-            driver.Manage().Window.Maximize();
-
-
-            //2.	Find a magnifier icon and click on it
+           //2.	Find a magnifier icon and click on it
             driver.FindElement(By.XPath("//span[contains(@class, 'search-icon') and contains(@class, 'dark-iconheader-search__search-icon')]")).Click();
 
             //3.	Find a search string and put there “BLOCKCHAIN”/”Cloud”/”Automation” (use as a parameter for a test)
                     
             IWebElement inputElement = driver.FindElement(By.Id("new_form_search"));
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
+            //WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
             wait.Until(d => inputElement.Displayed);
             inputElement.Clear();
             inputElement.SendKeys(searchItem);
 
             //4.Click “Find” button
             driver.FindElement(By.XPath("//span[contains(text(), 'Find')]")).Click();
-           // driver.FindElement(By.CssSelector("span.find")).Click();
-
-
+          
             string htmlContent = "<div class=\"search-results__items\">...</div>";
 
             // Load the HTML content into an XElement
@@ -61,7 +58,14 @@ namespace SeleniumProject1
             {
                 Assert.Fail("Not all <article> elements contain the specified words.");
             }
-          driver.Quit();  
+            
+          
+        }
+          [TearDown]
+        public void TearDown() 
+        {
+            driver.Quit();
+            driver.Dispose();
         }
     }
 }
