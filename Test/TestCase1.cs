@@ -1,33 +1,23 @@
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
 
 namespace SeleniumProject1
 {
-    public class TestCase1
+    public class TestCase1 : BaseTest
     {
-        private IWebDriver driver;
-        private WebDriverWait wait;
-        [SetUp]
-        public void Setup()
-        {
-            driver = new ChromeDriver();
-            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
-            driver.Navigate().GoToUrl(@"https://www.epam.com/");
-            driver.Manage().Window.Maximize();
-
-        }
         [Test]
         [TestCase("Java", "All Cities in Spain")]
         public void Test1(string programmingLanguage, string location)
-        {      
-            driver.FindElement(By.Id("onetrust-accept-btn-handler")).Click();
-            driver.FindElement(By.XPath("//a[text()='Careers']")).Click();
-            driver.FindElement(By.XPath("//*[@id='new_form_job_search-keyword']")).SendKeys(programmingLanguage);
-            driver.FindElement(By.XPath("//span[@class='select2-selection__arrow']")).Click();
-            driver.FindElement(By.XPath("//li[@title='All Cities in Spain']")).Click();
-            driver.FindElement(By.XPath("//label[contains(@class, 'recruiting-search__filter-label-23') and contains(@class, 'checkbox-custom-label') and contains(@class, 'body-text-small')]")).Click();
-            driver.FindElement(By.XPath("//button[contains(@class, 'small-button-text small-button-transparent-preset center-background-preset small-round-gradient-border job-search-button-transparent-23')]")).Click();
+        { 
+            BasePage basePage = new BasePage(); // creating an instance of the base page
+            CareerPage careerPage = new CareerPage(); // creating an instance of the career page 
+            
+            driver.FindElement(basePage.acceptButton).Click(); // using the instance of basepage we are loking for the acceptbutton and then clicking on it
+            driver.FindElement(basePage.careerTab).Click(); // click on career tab
+            driver.FindElement(careerPage.keywordInput).SendKeys(programmingLanguage); // sending the programming language
+            driver.FindElement(careerPage.locationDropdown).Click();
+            driver.FindElement(careerPage.DropdownOptionByCountryName(location)).Click();
+            driver.FindElement(careerPage.remoteCheckBox).Click();
+            driver.FindElement(careerPage.findButton).Click();
             driver.FindElement(By.XPath("//ul[@class=\"search-result__list\"]/li[last()]")).Click();
 
             // Find all search result items
@@ -55,13 +45,6 @@ namespace SeleniumProject1
             {
                 Assert.Fail($"The vacancy content does not contain the programming language '{programmingLanguage}'.");
             }
-        }
-        
-        [TearDown]
-        public void TearDown()
-        {
-            driver.Quit();
-            driver.Dispose();
         }
     }
 }
